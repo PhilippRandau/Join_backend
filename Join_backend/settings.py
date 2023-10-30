@@ -25,7 +25,17 @@ SECRET_KEY = 'django-insecure-wn+863#uqq=ilti510b6x1u^64lkf-(z36c5z(i+=%0x6mzpsm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['philipp199726.pythonanywhere.com']
+ALLOWED_HOSTS = [
+    'philipp199726.pythonanywhere.com',
+    '127.0.0.1',
+    'localhost'
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://philipp199726.pythonanywhere.com',
+    'http://127.0.0.1:8000',
+    'http://localhost:4200'
+]
 
 
 # Application definition
@@ -37,6 +47,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'Join',
+    'rest_framework',
+    'colorfield',
+    'rest_framework.authtoken',
+    "corsheaders"
 ]
 
 MIDDLEWARE = [
@@ -47,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'Join_backend.urls'
@@ -128,3 +144,11 @@ MEDIA_ROOT = '/home/philipp199726/Join_backend/media'
 MEDIA_URL = '/media/'
 STATIC_ROOT = '/home/philipp199726/Join_backend/static'
 STATIC_URL = '/static/'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
