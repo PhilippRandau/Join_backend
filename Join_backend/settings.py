@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'colorfield',
     'rest_framework.authtoken',
-    "corsheaders"
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -152,3 +152,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
+
+AUTHENTICATION_BACKENDS = [
+    'Join.backends.EmailBackend',  # Pfad zu Ihrer benutzerdefinierten Authentifizierungshandlerklasse
+]

@@ -1,8 +1,7 @@
 import datetime
-from django.conf import settings
 from django.db import models
 from colorfield.fields import ColorField
-from django.contrib.auth.models import User, Group
+# from django.contrib.auth.models import User, Group
 
 
 class Category(models.Model):
@@ -24,11 +23,11 @@ class Task(models.Model):
     )
     due_date = models.DateField(default=datetime.date.today)
     # assigned_to = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Task')
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        default=None
-    )
+    # user = models.ForeignKey(
+    #     User,
+    #     on_delete=models.CASCADE,
+    #     default=None
+    # )
 
     def __str__(self) -> str:
         return f'({self.id}) {self.title}'
@@ -37,3 +36,4 @@ class Task(models.Model):
         today = datetime.date.today()
         delta = today - self.created_at
         return delta.days
+    
