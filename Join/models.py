@@ -1,7 +1,6 @@
 import datetime
 from django.db import models
 from colorfield.fields import ColorField
-# from django.contrib.auth.models import User, Group
 
 
 class Category(models.Model):
@@ -36,4 +35,6 @@ class Task(models.Model):
         today = datetime.date.today()
         delta = today - self.created_at
         return delta.days
+    
+
     

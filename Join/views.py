@@ -2,32 +2,44 @@ from django.http import Http404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
-from .serializers import TaskSerializer
+from Join.backends import User
+from .serializers import RegisterSerializer, TaskSerializer
 from .models import Task
-
-
 from django.contrib.auth import login
+from rest_framework import generics
 
 class LoginView(APIView):
+    permission_classes = []
+    authentication_classes = []
+
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
         password = request.data.get('password')
-        
+
         user = authenticate(request, username=email, password=password)
-        
+
         if user is not None:
-            login(request, user)  # Anmeldung des Benutzers
+            login(request, user)
             token, created = Token.objects.get_or_create(user=user)
             return Response({
                 'token': token.key,
                 'user_id': user.pk,
-                'email': user.email
+                'email': user.email,
+                'username': user.username
             })
         else:
             return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class SignUpView(generics.CreateAPIView):
+    permission_classes = []
+    authentication_classes = []
+
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
+
 
 class TaskView(APIView):
     # authentication_classes = [authentication.TokenAuthentication]

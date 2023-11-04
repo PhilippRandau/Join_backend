@@ -154,5 +154,5 @@ REST_FRAMEWORK = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    'Join.backends.EmailBackend',  # Pfad zu Ihrer benutzerdefinierten Authentifizierungshandlerklasse
+    'Join.backends.EmailBackend'
 ]
