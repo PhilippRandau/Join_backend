@@ -1,6 +1,5 @@
-# from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from Join.backends import User
 from Join.models import Task, Category
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
@@ -10,6 +9,11 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email']
+
+# class GroupSerializer(serializers.HyperlinkedModelSerializer):
+#     class Meta:
+#         model = Group
+#         fields = ['url', 'name']
 
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):

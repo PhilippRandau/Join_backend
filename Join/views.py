@@ -1,36 +1,36 @@
 from django.http import Http404
-from rest_framework import status
-from rest_framework.views import APIView
+from rest_framework import status, authentication, permissions, generics
+from rest_framework.authtoken.views import ObtainAuthToken, APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from django.contrib.auth import authenticate
-from Join.backends import User
 from .serializers import RegisterSerializer, TaskSerializer
 from .models import Task
 from django.contrib.auth import login
-from rest_framework import generics
+from django.contrib.auth.models import User, Group
 
-class LoginView(APIView):
+
+class LoginView(ObtainAuthToken):
     permission_classes = []
     authentication_classes = []
 
     def post(self, request, *args, **kwargs):
-        email = request.data.get('email')
+        email = request.data['email']
         password = request.data.get('password')
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'error': 'Benutzer mit dieser E-Mail-Adresse existiert nicht'}, status=400)
 
-        user = authenticate(request, username=email, password=password)
-
-        if user is not None:
-            login(request, user)
+        if user.check_password(password):
             token, created = Token.objects.get_or_create(user=user)
             return Response({
                 'token': token.key,
                 'user_id': user.pk,
-                'email': user.email,
-                'username': user.username
+                'email': user.email
             })
         else:
-            return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': 'Ungültiges Passwort'}, status=400)
+
 
 
 class SignUpView(generics.CreateAPIView):
@@ -42,8 +42,8 @@ class SignUpView(generics.CreateAPIView):
 
 
 class TaskView(APIView):
-    # authentication_classes = [authentication.TokenAuthentication]
-    # permission_classes = [permissions.IsAdminUser]
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     # def post(self, request, *args, **kwargs):
     #     serializer = self.serializer_class(data=request.data,
