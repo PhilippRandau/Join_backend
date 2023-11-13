@@ -14,22 +14,45 @@ class Category(models.Model):
         return self.title
 
 
+class Subtask(models.Model):
+    title = models.CharField(max_length=100)
+    completed = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return self.title
+
+
 class Task(models.Model):
+    TASK_PRIOS = [
+        ("Low", "Low"),
+        ("Medium", "Medium"),
+        ("Urgent", "Urgent")
+    ]
+    TASK_SECTIONS = [
+        ("To-Do", "To Do"),
+        ("In-Progress", "In Progress"),
+        ("Awaiting-Feedback", "Awaiting Feedback"),
+        ("Done", "Done")
+    ]
     title = models.CharField(max_length=30)
     description = models.CharField(max_length=100)
     created_at = models.DateField(default=datetime.date.today)
-    category = models.ForeignKey(
-        Category,
-        on_delete=models.CASCADE,
-        default=None
-    )
     due_date = models.DateField(default=datetime.date.today)
+    prio = models.CharField(max_length=6, choices=TASK_PRIOS, default="Low")
+    section = models.CharField(
+        max_length=17, choices=TASK_SECTIONS, default="Todo")
+    assigned_to = models.ManyToManyField(User, related_name='assigned_to')
     creator = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         default=None
     )
-    assigned_to = models.ManyToManyField(User, related_name='assigned_to')
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        default=None
+    )
+    subtask = models.ManyToManyField(Subtask, related_name='subtask')
 
     def __str__(self) -> str:
         return f'({self.id}) {self.title}'

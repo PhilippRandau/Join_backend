@@ -32,7 +32,6 @@ class LoginView(ObtainAuthToken):
             return Response({'error': 'Ungültiges Passwort'}, status=400)
 
 
-
 class SignUpView(generics.CreateAPIView):
     permission_classes = []
     authentication_classes = []
@@ -58,7 +57,8 @@ class TaskView(APIView):
     #     })
     def get(self, request, format=None):
         tasks = Task.objects.all()
-        serializer = TaskSerializer(tasks, many=True)
+        serializer = TaskSerializer(
+            tasks, many=True, context={'request': request})
         return Response(serializer.data)
 
 

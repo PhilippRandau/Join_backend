@@ -1,15 +1,25 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from Join.models import Task, Category
+from Join.models import Task, Category, Subtask
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
-from rest_framework.request import Request
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email']
+
+
+class SubtaskSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Subtask
+        fields = ['title', 'completed']  # 'example_time_passed'
+
+class CategorySerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['title', 'created_at', 'category_color']
 
 # class GroupSerializer(serializers.HyperlinkedModelSerializer):
 #     class Meta:
@@ -21,20 +31,18 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
     creator = UserSerializer(
         read_only=True, default=serializers.CurrentUserDefault())
 
-    assigned_to = UserSerializer(
-        many=True,
-    )
+    assigned_to = UserSerializer(many=True)
+    subtask = SubtaskSerializer(many=True)
+    category = CategorySerializer(many=False, read_only=True)
+
 
     class Meta:
         model = Task
-        fields = ['id', 'title', 'description',
-                  'created_at',  'example_time_passed', 'creator', 'assigned_to']
+        fields = ['id', 'section', 'title', 'description','category', 'assigned_to',
+                  'created_at', 'due_date', 'prio',  'subtask', 'creator',]  # 'example_time_passed'
 
 
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['title', 'created_at', 'category_color']
+
 
 
 class RegisterSerializer(serializers.ModelSerializer):
