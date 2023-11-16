@@ -4,7 +4,7 @@ from Join.models import Task, Category, Subtask
 
 
 class AssignedTo(admin.ModelAdmin):
-    filter_horizontal = ('assigned_to', 'subtask')
+    filter_horizontal = ('assigned_to', 'subtasks')
 
 
 admin.site.register(Task, AssignedTo)

@@ -29,9 +29,9 @@ class Task(models.Model):
         ("Urgent", "Urgent")
     ]
     TASK_SECTIONS = [
-        ("To-Do", "To Do"),
-        ("In-Progress", "In Progress"),
-        ("Awaiting-Feedback", "Awaiting Feedback"),
+        ("To_Do", "To Do"),
+        ("In_Progress", "In Progress"),
+        ("Awaiting_Feedback", "Awaiting Feedback"),
         ("Done", "Done")
     ]
     title = models.CharField(max_length=30)
@@ -52,7 +52,7 @@ class Task(models.Model):
         on_delete=models.CASCADE,
         default=None
     )
-    subtask = models.ManyToManyField(Subtask, related_name='subtask')
+    subtasks = models.ManyToManyField(Subtask, related_name='subtasks')
 
     def __str__(self) -> str:
         return f'({self.id}) {self.title}'

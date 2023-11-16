@@ -31,12 +31,13 @@ ALLOWED_HOSTS = [
     'localhost'
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://philipp199726.pythonanywhere.com',
-    'http://127.0.0.1:8000',
-    'http://localhost:4200'
-]
+# CORS_ALLOWED_ORIGINS = [
+#     'http://philipp199726.pythonanywhere.com',
+#     'http://127.0.0.1:8000',
+#     'http://localhost:4200'
+# ]
 
+CORS_ORIGIN_ALLOW_ALL = True   
 
 # Application definition
 
@@ -153,3 +154,24 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication'
     ]
 }
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+# CORS_ALLOW_HEADERS = [
+# 'accept',
+# 'accept-encoding',
+# 'authorization',
+# 'content-type',
+# 'dnt',
+# 'origin',
+# 'user-agent',
+# 'x-csrftoken',
+# 'x-requested-with',
+# ]

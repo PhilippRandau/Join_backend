@@ -55,14 +55,32 @@ class TaskView(APIView):
     #         'user_id': user.pk,
     #         'email': user.email
     #     })
+    
     def get(self, request, format=None):
         tasks = Task.objects.all()
         serializer = TaskSerializer(
             tasks, many=True, context={'request': request})
         return Response(serializer.data)
 
+    def patch(self, request, format=None):
+        try:
+            task_id = request.data.get('id')
+            task = Task.objects.get(id=task_id)
+            serializer = TaskSerializer(
+                task, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors)
+        except Task.DoesNotExist:
+            return Response({'error': 'Task not found'})
+
 
 class TasksDetailView(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
     def get(self, request, pk):
         try:
             task = Task.objects.get(pk=pk)

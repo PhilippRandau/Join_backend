@@ -10,6 +10,15 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email']
 
+class AssignedToSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model=User
+        fields = ['id', 'first_name', 'last_name']
+
+class CreatorSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model=User
+        fields = ['id', 'username']
 
 class SubtaskSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -28,18 +37,18 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
-    creator = UserSerializer(
+    creator = CreatorSerializer(
         read_only=True, default=serializers.CurrentUserDefault())
 
-    assigned_to = UserSerializer(many=True)
-    subtask = SubtaskSerializer(many=True)
+    assigned_to = AssignedToSerializer(many=True, read_only=True)
+    subtasks = SubtaskSerializer(many=True, read_only=True)
     category = CategorySerializer(many=False, read_only=True)
 
 
     class Meta:
         model = Task
         fields = ['id', 'section', 'title', 'description','category', 'assigned_to',
-                  'created_at', 'due_date', 'prio',  'subtask', 'creator',]  # 'example_time_passed'
+                  'created_at', 'due_date', 'prio',  'subtasks', 'creator',]  # 'example_time_passed'
 
 
 
