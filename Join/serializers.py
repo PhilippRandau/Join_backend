@@ -51,9 +51,6 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
                   'created_at', 'due_date', 'prio',  'subtasks', 'creator',]  # 'example_time_passed'
 
 
-
-
-
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True,
