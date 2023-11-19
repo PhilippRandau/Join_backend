@@ -16,9 +16,9 @@ urlpatterns = [
     path('signup/', views.SignUpView.as_view()),
     path('tasks/', views.TaskView.as_view()),
     path('tasks/<int:pk>/', views.TasksDetailView.as_view()),
-    # path('categories/', CategoryListView.as_view(), name='category-list'),
+    path('categories/', views.CategoryView.as_view()),
     # path('categories/<int:pk>/', CategoryDetailView.as_view(), name='category-detail'),
-    # path('categorys/', views.CategoryView.as_view())
+    path('contacts/', views.ContactsView.as_view())
 ]
 
 # urlpatterns = format_suffix_patterns(urlpatterns)

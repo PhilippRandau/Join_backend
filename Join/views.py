@@ -3,8 +3,8 @@ from rest_framework import status, authentication, permissions, generics
 from rest_framework.authtoken.views import ObtainAuthToken, APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .serializers import RegisterSerializer, TaskSerializer
-from .models import Task
+from .serializers import RegisterSerializer, TaskSerializer, CategorySerializer, AssignedToSerializer
+from .models import Category, Task
 from django.contrib.auth import login
 from django.contrib.auth.models import User, Group
 
@@ -88,3 +88,23 @@ class TasksDetailView(APIView):
             return Response(serializer.data)
         except Task.DoesNotExist:
             raise Http404
+
+class CategoryView(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, format=None):
+        categories = Category.objects.all()
+        serializer = CategorySerializer(
+            categories, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+class ContactsView(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, format=None):
+        contacts = User.objects.all()
+        serializer = AssignedToSerializer(
+            contacts, many=True, context={'request': request})
+        return Response(serializer.data)
