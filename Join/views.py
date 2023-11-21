@@ -55,7 +55,7 @@ class TaskView(APIView):
     #         'user_id': user.pk,
     #         'email': user.email
     #     })
-    
+
     def get(self, request, format=None):
         tasks = Task.objects.all()
         serializer = TaskSerializer(
@@ -89,6 +89,7 @@ class TasksDetailView(APIView):
         except Task.DoesNotExist:
             raise Http404
 
+
 class CategoryView(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
@@ -98,13 +99,27 @@ class CategoryView(APIView):
         serializer = CategorySerializer(
             categories, many=True, context={'request': request})
         return Response(serializer.data)
-    
+
+
 class ContactsView(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, format=None):
-        contacts = User.objects.all()
+        user = request.user
+        contacts = User.objects.exclude(id=user.id)
         serializer = AssignedToSerializer(
             contacts, many=True, context={'request': request})
+        return Response(serializer.data)
+
+
+class UserLoggedInView(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, format=None):
+        user = request.user
+        creator = User.objects.get(id=user.id)
+        serializer = AssignedToSerializer(
+            creator, many=False, context={'request': request})
         return Response(serializer.data)
