@@ -6,8 +6,6 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from Join import views
 
 router = routers.DefaultRouter()
-# router.register(r'tasks', views.TaskView)
-# router.register(r'categorys', views.CategoryViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -18,8 +16,6 @@ urlpatterns = [
     path('tasks/<int:pk>/', views.TasksDetailView.as_view()),
     path('categories/', views.CategoryView.as_view()),
     path('contacts/', views.ContactsView.as_view()),
-    path('ownUser/', views.UserLoggedInView.as_view())
-    
+    path('ownUser/', views.UserLoggedInView.as_view()),
+    path('subtasks/', views.SubtasksView.as_view()),
 ]
-
-# urlpatterns = format_suffix_patterns(urlpatterns)

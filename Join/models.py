@@ -40,7 +40,7 @@ class Task(models.Model):
     due_date = models.DateField(default=datetime.date.today)
     prio = models.CharField(max_length=6, choices=TASK_PRIOS, default="Low")
     section = models.CharField(
-        max_length=17, choices=TASK_SECTIONS, default="Todo")
+        max_length=17, choices=TASK_SECTIONS, default="To_Do")
     assigned_to = models.ManyToManyField(User, related_name='assigned_to')
     creator = models.ForeignKey(
         User,
