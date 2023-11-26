@@ -3,7 +3,7 @@ from rest_framework import status, authentication, permissions, generics
 from rest_framework.authtoken.views import ObtainAuthToken, APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .serializers import RegisterSerializer, TaskSerializer, CategorySerializer, AssignedToSerializer, SubtaskSerializer
+from .serializers import RegisterSerializer, SummarySerializer, TaskSerializer, CategorySerializer, AssignedToSerializer, SubtaskSerializer
 from .models import Category, Task, Subtask
 from django.contrib.auth import login
 from django.contrib.auth.models import User, Group
@@ -138,7 +138,7 @@ class SubtasksView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserLoggedInView(APIView):
+class UserView(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
@@ -148,3 +148,15 @@ class UserLoggedInView(APIView):
         serializer = AssignedToSerializer(
             creator, many=False, context={'request': request})
         return Response(serializer.data)
+
+
+class SummaryView(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, format=None):
+        summary = Task.objects.all()
+        serializer = SummarySerializer(
+            summary, many=True, context={'request': request})
+        return Response(serializer.data)
+

@@ -5,7 +5,6 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
 
-
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
@@ -36,6 +35,12 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'title', 'created_at', 'category_color']
 
 
+class SummarySerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Task
+        fields = ['id', 'section', 'due_date', 'prio']
+
+
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
     creator = CreatorSerializer(
         read_only=True, default=serializers.CurrentUserDefault())
@@ -48,12 +53,11 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
         model = Task
         fields = ['id', 'section', 'title', 'description', 'category', 'assigned_to',
                   'created_at', 'due_date', 'prio',  'subtasks', 'creator',]  # 'example_time_passed'
-        
+
     def create(self, validated_data, *args, **kwargs):
         category_data = validated_data.pop('category')
         category_instance = Category.objects.get(**category_data)
         validated_data['category'] = category_instance
-        
 
         assigned_to_data = validated_data.pop('assigned_to', [])
         assigned_to_instances = []
@@ -67,6 +71,7 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
         validated_data['creator'] = self.context['request'].user
 
         return super(TaskSerializer, self).create(validated_data, *args, **kwargs)
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(

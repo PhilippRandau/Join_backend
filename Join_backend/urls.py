@@ -16,6 +16,7 @@ urlpatterns = [
     path('tasks/<int:pk>/', views.TasksDetailView.as_view()),
     path('categories/', views.CategoryView.as_view()),
     path('contacts/', views.ContactsView.as_view()),
-    path('ownUser/', views.UserLoggedInView.as_view()),
+    path('user/', views.UserView.as_view()),
     path('subtasks/', views.SubtasksView.as_view()),
+    path('summary/', views.SummaryView.as_view())
 ]
