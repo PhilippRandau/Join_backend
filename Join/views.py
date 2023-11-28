@@ -3,7 +3,7 @@ from rest_framework import status, authentication, permissions, generics
 from rest_framework.authtoken.views import ObtainAuthToken, APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .serializers import RegisterSerializer, SummarySerializer, TaskSerializer, CategorySerializer, AssignedToSerializer, SubtaskSerializer
+from .serializers import RegisterSerializer, SummarySerializer, TaskSerializer, CategorySerializer, AssignedToSerializer, SubtaskSerializer, TaskSerializerGet
 from .models import Category, Task, Subtask
 from django.contrib.auth import login
 from django.contrib.auth.models import User, Group
@@ -46,7 +46,7 @@ class TaskView(APIView):
 
     def get(self, request, format=None):
         tasks = Task.objects.all()
-        serializer = TaskSerializer(
+        serializer = TaskSerializerGet(
             tasks, many=True, context={'request': request})
         return Response(serializer.data)
 

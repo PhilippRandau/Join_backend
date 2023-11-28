@@ -14,7 +14,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class AssignedToSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name']
+        fields = ['id', 'first_name', 'last_name', 'email']
 
 
 class CreatorSerializer(serializers.HyperlinkedModelSerializer):
@@ -44,8 +44,8 @@ class SummarySerializer(serializers.HyperlinkedModelSerializer):
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
     creator = CreatorSerializer(
         read_only=True, default=serializers.CurrentUserDefault())
-
-    assigned_to = AssignedToSerializer(many=True)
+    assigned_to = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=User.objects.all())
     subtasks = SubtaskSerializer(many=True, read_only=True)
     category = CategorySerializer(many=False)
 
@@ -59,18 +59,24 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
         category_instance = Category.objects.get(**category_data)
         validated_data['category'] = category_instance
 
-        assigned_to_data = validated_data.pop('assigned_to', [])
-        assigned_to_instances = []
-
-        for user_data in assigned_to_data:
-            user_instance = User.objects.get(**user_data)
-            assigned_to_instances.append(user_instance)
-
-        validated_data['assigned_to'] = assigned_to_instances
 
         validated_data['creator'] = self.context['request'].user
 
         return super(TaskSerializer, self).create(validated_data, *args, **kwargs)
+    
+
+class TaskSerializerGet(serializers.HyperlinkedModelSerializer):
+    creator = CreatorSerializer(
+        read_only=True, default=serializers.CurrentUserDefault())
+    assigned_to = AssignedToSerializer(
+        many=True, read_only=True)
+    subtasks = SubtaskSerializer(many=True, read_only=True)
+    category = CategorySerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Task
+        fields = ['id', 'section', 'title', 'description', 'category', 'assigned_to',
+                  'created_at', 'due_date', 'prio',  'subtasks', 'creator']
 
 
 class RegisterSerializer(serializers.ModelSerializer):
