@@ -5,37 +5,37 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email']
 
 
-class AssignedToSerializer(serializers.HyperlinkedModelSerializer):
+class AssignedToSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'email']
 
 
-class CreatorSerializer(serializers.HyperlinkedModelSerializer):
+class CreatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username']
 
 
-class SubtaskSerializer(serializers.HyperlinkedModelSerializer):
+class SubtaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subtask
         fields = ['title', 'completed']  # 'example_time_passed'
 
 
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'title', 'created_at', 'category_color']
 
 
-class SummarySerializer(serializers.HyperlinkedModelSerializer):
+class SummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['id', 'section', 'due_date', 'prio']
