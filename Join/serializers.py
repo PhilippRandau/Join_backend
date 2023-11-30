@@ -41,37 +41,15 @@ class SummarySerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'section', 'due_date', 'prio']
 
 
-class TaskSerializer(serializers.HyperlinkedModelSerializer):
-    creator = CreatorSerializer(
+class TaskSerializer(serializers.ModelSerializer):
+    creator = serializers.PrimaryKeyRelatedField(
         read_only=True, default=serializers.CurrentUserDefault())
     assigned_to = serializers.PrimaryKeyRelatedField(
         many=True, queryset=User.objects.all())
-    subtasks = SubtaskSerializer(many=True, read_only=True)
-    category = CategorySerializer(many=False)
-
-    class Meta:
-        model = Task
-        fields = ['id', 'section', 'title', 'description', 'category', 'assigned_to',
-                  'created_at', 'due_date', 'prio',  'subtasks', 'creator',]  # 'example_time_passed'
-
-    def create(self, validated_data, *args, **kwargs):
-        category_data = validated_data.pop('category')
-        category_instance = Category.objects.get(**category_data)
-        validated_data['category'] = category_instance
-
-
-        validated_data['creator'] = self.context['request'].user
-
-        return super(TaskSerializer, self).create(validated_data, *args, **kwargs)
-    
-
-class TaskSerializerGet(serializers.HyperlinkedModelSerializer):
-    creator = CreatorSerializer(
-        read_only=True, default=serializers.CurrentUserDefault())
-    assigned_to = AssignedToSerializer(
-        many=True, read_only=True)
-    subtasks = SubtaskSerializer(many=True, read_only=True)
-    category = CategorySerializer(many=False, read_only=True)
+    subtasks = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Subtask.objects.all())
+    category = serializers.PrimaryKeyRelatedField(
+        many=False, queryset=Category.objects.all())
 
     class Meta:
         model = Task
