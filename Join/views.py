@@ -66,15 +66,12 @@ class TaskView(APIView):
 
     def post(self, request, format=None):
         data = request.data
-
         serializer = TaskSerializer(data=data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-
 
 
 class TasksDetailView(APIView):
@@ -108,6 +105,17 @@ class CategoryView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class CategoryDetailView(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk):
+        category = Category.objects.get(pk=pk)
+        serializer = CategorySerializer(
+            category)
+        return Response(serializer.data)
+    
+
 class ContactsView(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
@@ -137,6 +145,15 @@ class SubtasksView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class SubtaskDetailView(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk):
+        subtask = Subtask.objects.get(pk=pk)
+        serializer = SubtaskSerializer(
+            subtask)
+        return Response(serializer.data)
 
 class UserView(APIView):
     authentication_classes = [authentication.TokenAuthentication]
@@ -148,6 +165,18 @@ class UserView(APIView):
         serializer = AssignedToSerializer(
             creator, many=False, context={'request': request})
         return Response(serializer.data)
+    
+class UsersDetailView(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk):
+        assigned_to = User.objects.get(pk=pk)
+        serializer = AssignedToSerializer(
+            assigned_to)
+        return Response(serializer.data)
+    
+    
 
 
 class SummaryView(APIView):
@@ -159,4 +188,3 @@ class SummaryView(APIView):
         serializer = SummarySerializer(
             summary, many=True, context={'request': request})
         return Response(serializer.data)
-

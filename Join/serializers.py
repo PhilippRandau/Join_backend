@@ -26,7 +26,7 @@ class CreatorSerializer(serializers.ModelSerializer):
 class SubtaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subtask
-        fields = ['title', 'completed']  # 'example_time_passed'
+        fields = ['id', 'title', 'completed']  # 'example_time_passed'
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -42,8 +42,7 @@ class SummarySerializer(serializers.ModelSerializer):
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    creator = serializers.PrimaryKeyRelatedField(
-        read_only=True, default=serializers.CurrentUserDefault())
+    creator = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), default=serializers.CurrentUserDefault())
     assigned_to = serializers.PrimaryKeyRelatedField(
         many=True, queryset=User.objects.all())
     subtasks = serializers.PrimaryKeyRelatedField(
