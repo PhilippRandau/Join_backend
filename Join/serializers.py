@@ -1,20 +1,28 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from Join.models import Task, Category, Subtask
+from Join.models import Task, Category, Subtask, UserDetail
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserDetail
+        fields = ['bubble_color']
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'email']
+        fields = ['id', 'username', 'first_name',
+                  'last_name', 'email']
 
 
 class AssignedToSerializer(serializers.ModelSerializer):
+    userdetail = UserDetailSerializer(many=False)
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email']
+        fields = ['id', 'first_name', 'last_name', 'email', 'userdetail']
 
 
 class CreatorSerializer(serializers.ModelSerializer):
@@ -26,7 +34,7 @@ class CreatorSerializer(serializers.ModelSerializer):
 class SubtaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subtask
-        fields = ['id', 'title', 'completed']  # 'example_time_passed'
+        fields = ['id', 'title', 'completed'] 
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -42,7 +50,8 @@ class SummarySerializer(serializers.ModelSerializer):
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    creator = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), default=serializers.CurrentUserDefault())
+    creator = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), default=serializers.CurrentUserDefault())
     assigned_to = serializers.PrimaryKeyRelatedField(
         many=True, queryset=User.objects.all())
     subtasks = serializers.PrimaryKeyRelatedField(

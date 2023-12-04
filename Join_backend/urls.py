@@ -21,5 +21,5 @@ urlpatterns = [
     path('user/<int:pk>/', views.UsersDetailView.as_view()),
     path('subtasks/', views.SubtasksView.as_view()),
     path('subtasks/<int:pk>/', views.SubtaskDetailView.as_view()),
-    path('summary/', views.SummaryView.as_view())
+    path('summary/', views.SummaryView.as_view()),
 ]
