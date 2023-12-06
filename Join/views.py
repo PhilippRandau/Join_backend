@@ -50,20 +50,6 @@ class TaskView(APIView):
             tasks, many=True, context={'request': request})
         return Response(serializer.data)
 
-    def patch(self, request, format=None):
-        try:
-            task_id = request.data.get('id')
-            task = Task.objects.get(id=task_id)
-            serializer = TaskSerializer(
-                task, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            else:
-                return Response(serializer.errors)
-        except Task.DoesNotExist:
-            return Response({'error': 'Task not found'})
-
     def post(self, request, format=None):
         data = request.data
         serializer = TaskSerializer(data=data, context={'request': request})
@@ -84,7 +70,20 @@ class TasksDetailView(APIView):
             serializer = TaskSerializer(task)
             return Response(serializer.data)
         except Task.DoesNotExist:
-            raise Http404
+            raise Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def patch(self, request, pk):
+        try:
+            task = Task.objects.get(pk=pk)
+            serializer = TaskSerializer(
+                task, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors)
+        except Task.DoesNotExist:
+            return Response({'error': 'Task not found'})
 
 
 class CategoryView(APIView):
@@ -99,7 +98,7 @@ class CategoryView(APIView):
 
     def post(self, request, *args, **kwargs):
         serializer = CategorySerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -114,7 +113,7 @@ class CategoryDetailView(APIView):
         serializer = CategorySerializer(
             category)
         return Response(serializer.data)
-    
+
 
 class ContactsView(APIView):
     authentication_classes = [authentication.TokenAuthentication]
@@ -140,10 +139,11 @@ class SubtasksView(APIView):
 
     def post(self, request, *args, **kwargs):
         serializer = SubtaskSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class SubtaskDetailView(APIView):
     authentication_classes = [authentication.TokenAuthentication]
@@ -154,6 +154,16 @@ class SubtaskDetailView(APIView):
         serializer = SubtaskSerializer(
             subtask)
         return Response(serializer.data)
+    
+    def patch(self, request, pk):
+        subtask = Subtask.objects.get(pk=pk)
+        serializer = SubtaskSerializer(
+            subtask, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserView(APIView):
     authentication_classes = [authentication.TokenAuthentication]
@@ -165,7 +175,8 @@ class UserView(APIView):
         serializer = AssignedToSerializer(
             creator, many=False, context={'request': request})
         return Response(serializer.data)
-    
+
+
 class UsersDetailView(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
@@ -175,8 +186,6 @@ class UsersDetailView(APIView):
         serializer = AssignedToSerializer(
             assigned_to)
         return Response(serializer.data)
-    
-    
 
 
 class SummaryView(APIView):
